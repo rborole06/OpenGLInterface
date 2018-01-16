@@ -47,7 +47,7 @@ private:
 	TCHAR *szAppName;
 	WNDCLASSEX wndclass;
 	LONG dwStyle;
-	WINDOWPLACEMENT  wpPrev;
+	WINDOWPLACEMENT wpPrev;
 	MONITORINFO monitorInfo;
 	HDC hdc;
 	HGLRC hglrc;
@@ -59,5 +59,5 @@ private:
 	bool gbEscapeKeyIsPressed;
 	bool gbActiveWindow;
 	bool bDone;
-	IOpenGL * scene;
+	IOpenGL *scene;
 };

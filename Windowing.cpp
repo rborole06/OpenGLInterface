@@ -78,7 +78,7 @@ Windowing::Windowing(HINSTANCE hInstance,TCHAR *title)
 	hdc = NULL;
 	gbEscapeKeyPressed = false;
 	gbActiveWindow = false;
-	IsGameDone = false;
+	bDone = false;
 	ZeroMemory(&wndclass, sizeof(WNDCLASSEX));
 	
 	szAppName = title;
@@ -130,8 +130,8 @@ BOOL Windowing::Show(int width, int height , int style)
 		height,
 		NULL,
 		NULL,
-		 hInstance,
-		 this
+		hInstance,
+		this
 	);
 
 	 if (hwnd == NULL)
@@ -148,36 +148,52 @@ BOOL Windowing::Show(int width, int height , int style)
 BOOL Windowing::IntializeGL()
 {
 	PIXELFORMATDESCRIPTOR pfd;
+	int iPixelFormatIndex;
 
+	// Code
+	ZeroMemory(&pfd, sizeof(PIXELFORMATDESCRIPTOR));
+
+	// Initialization of pixel format descriptor
 	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
 	pfd.nVersion = 1;
-	pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	pfd.iPixelType = PFD_TYPE_RGBA;
 	pfd.cColorBits = 32;
 	pfd.cRedBits = 8;
-	pfd.cBlueBits = 8;
+	pfd.cGreenBits = 8;
 	pfd.cBlueBits = 8;
 	pfd.cAlphaBits = 8;
 	pfd.cDepthBits = 32;
-	
-	hdc = GetDC(hwnd);
 
-	if (hdc == NULL)
-		return false;
+	ghdc = GetDC(ghwnd);
 
-	int iIndexPixelFormatDescriptor = ChoosePixelFormat(hdc, &pfd);
-	if (iIndexPixelFormatDescriptor == 0)
-		return false;
-	
-	if (SetPixelFormat(hdc, iIndexPixelFormatDescriptor, &pfd) == FALSE)
-		return false;
-	
-	hglrc = wglCreateContext(hdc);
-	if (hglrc == NULL)
-		return false;
-	
-	if (wglMakeCurrent(hdc, hglrc) == FALSE)
-		return false;
+	iPixelFormatIndex = ChoosePixelFormat(ghdc, &pfd);
+	if (iPixelFormatIndex == 0)
+	{
+		ReleaseDC(ghwnd, ghdc);
+		ghdc = NULL;
+	}
+
+	if (SetPixelFormat(ghdc, iPixelFormatIndex, &pfd) == FALSE)
+	{
+		ReleaseDC(ghwnd, ghdc);
+		ghdc = NULL;
+	}
+
+	ghrc = wglCreateContext(ghdc);
+	if (ghrc == NULL)
+	{
+		ReleaseDC(ghwnd, ghdc);
+		ghdc = NULL;
+	}
+
+	if (wglMakeCurrent(ghdc, ghrc) == FALSE)
+	{
+		wglDeleteContext(ghrc);
+		ghrc = NULL;
+		ReleaseDC(ghwnd, ghdc);
+		ghdc = NULL;
+	}
 
 	scene->Resize(width,height);	//WARM UP CALL TO RESIZE
 	
@@ -193,7 +209,6 @@ int Windowing::StartMessageLoop()
 			if (msg.message == WM_QUIT)
 			{
 				bDone = true;
-
 			}
 			else
 			{

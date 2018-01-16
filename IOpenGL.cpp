@@ -5,9 +5,6 @@
 #include<gl\GLU.h>
 #include<iostream>
 
-#ifndef _ISCENE_H
-#define _ISCENE_H
-
 /*REFERENCE FOR HEASER GUARDS
 https://en.wikipedia.org/wiki/Include_guard
 */
@@ -33,5 +30,3 @@ public:
 	virtual void SceneTransition() = 0;
 	virtual void UnInitialize() = 0;
 };
-
-#endif

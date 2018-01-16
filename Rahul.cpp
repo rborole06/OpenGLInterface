@@ -13,7 +13,7 @@ public:
 	};
 
 	Rahul();
-	static IOpenGL* GetInstance(SCENE_NUMBER scene);
+	static IOpenGL* GetInstance();
 	virtual BOOL SceneHandler(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) = 0;
 	virtual void Initialize() = 0;
 	virtual void Update() = 0;
@@ -28,7 +28,7 @@ Rahul::Rahul()
 
 }
 
-Rahul::GetInstance(SCENE_NUMBER scene)
+Rahul::GetInstance()
 {
 	IOpenGL* ptr = new Rahul();
 	return ptr;
