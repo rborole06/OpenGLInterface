@@ -1,5 +1,6 @@
 #include "MyScenes.h"
 #include "MySquare.h"
+#include "Rahul.h"
 #include "Header.h"
 
 class MyTriangle : public MyScenes
@@ -38,10 +39,15 @@ MyScenes* MyScenes::getInstance(HDC hdc, int scneNumber)
 		MyScenes *client = new MyTriangle();
 		return client;
 	}
-	else
+	else if (scneNumber == 2)
 	{
 		//MessageBox(ghwnd, TEXT("eee"), TEXT("ddda"), MB_OK);
 		MyScenes *client = new MySquare(ghdc);
+		return client;
+	}
+	else if (scneNumber == 3)
+	{
+		MyScenes *client = new Rahul(ghdc);
 		return client;
 	}
 }
@@ -175,21 +181,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				gbFullscreen = false;
 			}
 			break;
-		case 0x41:
-			if (gbIsAPressed == false)
-			{
-				// we are showing a square from here
-				gbIsAPressed = true;
-				
-				myScenes = MyScenes::getInstance(ghdc, 2);
-				//myScenes->display();
-			}
-			else
-			{
-				gbIsAPressed = false;
-				myScenes = MyScenes::getInstance(ghdc, 1);
-				//myScenes->display();
-			}
+		//case 0x41:
+		//	if (gbIsAPressed == false)
+		//	{
+		//		// we are showing a square from here
+		//		gbIsAPressed = true;
+		//		
+		//		myScenes = MyScenes::getInstance(ghdc, 2);
+		//		//myScenes->display();
+		//	}
+		//	else
+		//	{
+		//		gbIsAPressed = false;
+		//		myScenes = MyScenes::getInstance(ghdc, 1);
+		//		//myScenes->display();
+		//	}
+		//	break;
+		case 0x52:	// R key
+			myScenes = MyScenes::getInstance(ghdc,3);
+			break;
+		case 0x53:	// S key
+			myScenes = MyScenes::getInstance(ghdc, 2);
 			break;
 		default:
 			break;
